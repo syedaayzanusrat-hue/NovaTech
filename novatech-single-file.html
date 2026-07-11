@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaTech — Build Faster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+/* ============================================================
+   NOVATECH — DESIGN TOKENS
+   Palette: Midnight Ink base, Electric Cyan + Signal Amber accents
+   Type: Space Grotesk (display), Inter (body), JetBrains Mono (labels/data)
+   ============================================================ */
+:root {
+  --bg: #0b0f19;
+  --surface: #121729;
+  --surface-2: #1a2138;
+  --border: #262f4a;
+
+  --text: #f1f3f9;
+  --text-muted: #8b93a7;
+
+  --cyan: #2dd4f0;
+  --cyan-dim: #1a9bb3;
+  --amber: #ffb020;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ===================== RESET ===================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; }
+
+a { text-decoration: none; color: inherit; }
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ===================== SCROLL REVEAL ===================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===================== BUTTONS ===================== */
+.btn {
+  display: inline-block;
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--cyan);
+  color: #04141a;
+}
+.btn-primary:hover {
+  background: #58e0f7;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 212, 240, 0.25);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.btn-nav {
+  padding: 9px 20px;
+  font-size: 14px;
+  background: var(--cyan);
+  color: #04141a;
+}
+.btn-nav:hover { background: #58e0f7; }
+
+/* ===================== EYEBROW LABEL ===================== */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+.eyebrow.center { text-align: center; }
+
+/* ===================== NAVBAR ===================== */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 6%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(11, 15, 25, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.navbar.scrolled {
+  background: rgba(11, 15, 25, 0.92);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.logo span { color: var(--cyan); }
+.logo-mark {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  font-size: 16px;
+}
+
+nav { flex: 1; display: flex; justify-content: center; }
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 32px;
+}
+.nav-links a {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.25s ease;
+}
+.nav-links a:hover { color: var(--text); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 200;
+}
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: 0.3s ease;
+}
+
+/* ===================== HERO ===================== */
+.hero {
+  padding: 90px 6% 100px;
+  background:
+    radial-gradient(ellipse 700px 400px at 85% 10%, rgba(45, 212, 240, 0.10), transparent),
+    radial-gradient(ellipse 500px 400px at 10% 90%, rgba(255, 176, 32, 0.06), transparent);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-content h1 {
+  font-size: 46px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+.highlight { color: var(--cyan); }
+
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 17px;
+  max-width: 480px;
+  margin-bottom: 34px;
+}
+
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* ---- Terminal signature element ---- */
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+.terminal-title {
+  margin-left: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.terminal-body {
+  padding: 22px 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.terminal-body p { margin-bottom: 10px; white-space: nowrap; overflow: hidden; }
+.prompt { color: var(--amber); margin-right: 8px; }
+.output { color: var(--text-muted); font-size: 13px; padding-left: 20px; }
+.highlight-line { color: var(--cyan); }
+
+.type-line, .type-line-2 {
+  display: inline-block;
+  overflow: hidden;
+  border-right: 2px solid var(--cyan);
+  white-space: nowrap;
+  width: 0;
+  animation: typing 1.6s steps(14) forwards, blink 0.8s step-end infinite;
+}
+.type-line { animation-delay: 0.3s, 0.3s; }
+.type-line-2 { width: 0; animation: typing2 1.8s steps(20) forwards, blink 0.8s step-end infinite; animation-delay: 2.2s, 2.2s; }
+
+@keyframes typing { from { width: 0; } to { width: 8.7em; } }
+@keyframes typing2 { from { width: 0; } to { width: 13.5em; } }
+@keyframes blink { 50% { border-color: transparent; } }
+
+.cursor { animation: blink 0.8s step-end infinite; color: var(--cyan); }
+
+/* ===================== STATS ===================== */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+  padding: 50px 6%;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.stat {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+  padding: 10px 24px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--cyan);
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===================== FEATURES ===================== */
+.features {
+  padding: 100px 6%;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.features h2 { font-size: 34px; margin-bottom: 56px; }
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  text-align: left;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px 26px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.card:hover { transform: translateY(-6px); border-color: var(--cyan-dim); }
+
+.icon-tile {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: rgba(45, 212, 240, 0.1);
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.icon-tile svg { width: 22px; height: 22px; }
+
+.card h3 { font-size: 18px; margin-bottom: 10px; }
+.card p { color: var(--text-muted); font-size: 14.5px; }
+
+/* ===================== PROCESS ===================== */
+.process {
+  padding: 100px 6%;
+  text-align: center;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.process h2 { font-size: 34px; margin-bottom: 60px; }
+
+.process-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.step { flex: 1; max-width: 260px; text-align: left; }
+.step-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--amber);
+  margin-bottom: 14px;
+}
+.step h3 { font-size: 18px; margin-bottom: 10px; }
+.step p { color: var(--text-muted); font-size: 14.5px; }
+
+.step-line {
+  flex: 0 0 40px;
+  height: 1px;
+  background: var(--border);
+  margin-top: 10px;
+}
+
+/* ===================== ABOUT ===================== */
+.about { padding: 100px 6%; max-width: 1200px; margin: 0 auto; }
+.about-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 60px;
+  align-items: center;
+}
+.about-visual { display: flex; justify-content: center; }
+.blob {
+  width: 280px;
+  height: 280px;
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  background: linear-gradient(135deg, var(--cyan), var(--amber));
+  opacity: 0.85;
+  filter: blur(0.5px);
+}
+.about-content h2 { font-size: 32px; margin-bottom: 18px; }
+.about-content p { color: var(--text-muted); font-size: 16px; }
+
+/* ===================== TESTIMONIAL ===================== */
+.testimonial {
+  padding: 90px 6%;
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.testimonial blockquote {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+.testimonial-author {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  color: var(--cyan);
+}
+
+/* ===================== CONTACT / CTA ===================== */
+.contact {
+  padding: 100px 6%;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(45, 212, 240, 0.08), rgba(255, 176, 32, 0.05));
+  border-top: 1px solid var(--border);
+}
+.contact h2 { font-size: 34px; margin-bottom: 14px; }
+.contact p { color: var(--text-muted); margin-bottom: 30px; }
+
+/* ===================== FOOTER ===================== */
+footer { padding: 40px 6% 26px; border-top: 1px solid var(--border); }
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+.footer-links { display: flex; gap: 26px; flex-wrap: wrap; }
+.footer-links a { font-size: 14px; color: var(--text-muted); }
+.footer-links a:hover { color: var(--cyan); }
+.footer-bottom {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-content { text-align: center; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; }
+  .about-grid { grid-template-columns: 1fr; text-align: center; }
+  .about-visual { order: -1; }
+  .process-steps { flex-direction: column; align-items: center; gap: 30px; }
+  .step { max-width: 320px; text-align: center; }
+  .step-line { display: none; }
+}
+
+@media (max-width: 768px) {
+  nav { display: none; }
+  .btn-nav { display: none; }
+  .hamburger { display: flex; }
+
+  .nav-links {
+    position: fixed;
+    top: 66px;
+    left: 0;
+    width: 100%;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    gap: 20px;
+    display: none;
+  }
+  .nav-links.active { display: flex; }
+
+  .hero-content h1 { font-size: 32px; }
+  .feature-cards { grid-template-columns: 1fr; }
+  .stats { flex-direction: column; }
+  .stat { border-right: none; border-bottom: 1px solid var(--border); padding: 18px 0; }
+  .stat:last-child { border-bottom: none; }
+  .testimonial blockquote { font-size: 21px; }
+}
+
+@media (max-width: 480px) {
+  .navbar { padding: 14px 5%; }
+  .hero { padding: 60px 5% 70px; }
+  .hero-content h1 { font-size: 27px; }
+  .features, .process, .about, .contact, .testimonial { padding: 60px 5%; }
+  .features h2, .process h2, .contact h2 { font-size: 26px; }
+  .btn { padding: 11px 22px; font-size: 14px; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <div class="logo">
+      <span class="logo-mark">&lt;/&gt;</span>
+      Nova<span>Tech</span>
+    </div>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#process">How it Works</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="btn btn-nav">Get Started</a>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <section class="hero" id="home">
+    <div class="hero-grid">
+      <div class="hero-content reveal">
+        <p class="eyebrow">// BUILD SOFTWARE FASTER</p>
+        <h1>Ship products your <span class="highlight">users actually love</span></h1>
+        <p class="hero-sub">NovaTech gives small teams the tools to design, build, and launch responsive digital products — without the usual overhead.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Get Started — It's Free</a>
+          <a href="#process" class="btn btn-ghost">See How it Works</a>
+        </div>
+      </div>
+
+      <!-- Signature element: animated terminal mockup -->
+      <div class="hero-visual reveal">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">novatech — deploy</span>
+          </div>
+          <div class="terminal-body">
+            <p><span class="prompt">$</span> <span class="type-line">npm run build</span></p>
+            <p class="output">✓ compiled successfully in 1.2s</p>
+            <p class="output">✓ responsive breakpoints verified</p>
+            <p><span class="prompt">$</span> <span class="type-line-2">novatech deploy --live</span></p>
+            <p class="output highlight-line">✓ live at novatech.app <span class="cursor">▌</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS BAR ===================== -->
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-number">10k+</span>
+      <span class="stat-label">Projects Launched</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">99.9%</span>
+      <span class="stat-label">Uptime</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">24/7</span>
+      <span class="stat-label">Support</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">150+</span>
+      <span class="stat-label">Countries Served</span>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURES SECTION ===================== -->
+  <section class="features" id="features">
+    <p class="eyebrow center">// WHY NOVATECH</p>
+    <h2 class="reveal">Everything you need, nothing you don't</h2>
+
+    <div class="feature-cards">
+      <div class="card reveal">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Fast Performance</h3>
+        <p>Optimized builds and lean code so your users never wait for a page to catch up.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="2" stroke="currentColor" stroke-width="2"/><line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>Fully Responsive</h3>
+        <p>Every layout adapts cleanly across mobile, tablet, and desktop — no breakpoints missed.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Modern Design</h3>
+        <p>Clean interfaces built on a real design system, not stock templates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROCESS / HOW IT WORKS ===================== -->
+  <section class="process" id="process">
+    <p class="eyebrow center">// THE PROCESS</p>
+    <h2 class="reveal">From idea to live product in three steps</h2>
+
+    <div class="process-steps">
+      <div class="step reveal">
+        <span class="step-num">01</span>
+        <h3>Sign Up</h3>
+        <p>Create your workspace in under a minute — no credit card required.</p>
+      </div>
+      <div class="step-line"></div>
+      <div class="step reveal">
+        <span class="step-num">02</span>
+        <h3>Connect Your Stack</h3>
+        <p>Plug in your repo and design files. NovaTech maps your project structure automatically.</p>
+      </div>
+      <div class="step-line"></div>
+      <div class="step reveal">
+        <span class="step-num">03</span>
+        <h3>Launch</h3>
+        <p>Deploy a fully responsive, production-ready site with one click.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT SECTION ===================== -->
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="blob"></div>
+      </div>
+      <div class="about-content reveal">
+        <p class="eyebrow">// ABOUT US</p>
+        <h2>Built by developers, for developers</h2>
+        <p>NovaTech started as a side project between three engineers tired of rebuilding the same responsive layouts for every client. Today, thousands of teams use it to skip the boilerplate and ship what actually matters.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIAL ===================== -->
+  <section class="testimonial">
+    <blockquote class="reveal">
+      "NovaTech cut our front-end build time in half. What used to take a sprint now takes an afternoon."
+    </blockquote>
+    <p class="testimonial-author">— Hira Malik, Product Lead at Loopline</p>
+  </section>
+
+  <!-- ===================== CONTACT / CTA ===================== -->
+  <section class="contact" id="contact">
+    <h2 class="reveal">Ready to build something amazing?</h2>
+    <p>Join thousands of teams already shipping faster with NovaTech.</p>
+    <a href="mailto:hello@novatech.com" class="btn btn-primary">Get Started — It's Free</a>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="footer-top">
+      <div class="logo">
+        <span class="logo-mark">&lt;/&gt;</span>
+        Nova<span>Tech</span>
+      </div>
+      <div class="footer-links">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#process">How it Works</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <p class="footer-bottom">&copy; 2026 NovaTech. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    });
+
+    // Navbar background on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Scroll-reveal animation for sections
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
